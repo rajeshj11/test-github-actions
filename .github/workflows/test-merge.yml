@@ -2,6 +2,8 @@ name: Pull Request Message
 
 on:
   pull_request:
+    branches:
+      - main  # Specify the branch where the merge operation should be performed
     types: [opened, synchronize]
 
 jobs:
@@ -16,6 +18,8 @@ jobs:
 
       - name: Set up Git
         uses: actions/checkout@v2
+        with:
+          ref: ${{ github.event.pull_request.head.ref }}  # Check out the pull request branch
 
       - name: Make API request
         id: myRequest
@@ -25,27 +29,27 @@ jobs:
           preventFailureOnNoResponse: "true"
           ignoreStatusCodes: "404"
           method: "GET"
-        continue-on-error: true
+
       # Fail the job if the source is database
       - name: If 404 pass the job
+        if: steps.myRequest.outputs.response == ''
         run: |
-          echo "testing the comment ${{ steps.myRequest.outputs.status_code }} ${{ steps.myRequest.outputs.status_code }}" > message.txt
+         echo "response::=> ${{ steps.myRequest.outputs.response }}"
+          echo "status code::=> ${{ steps.myRequest.outputs.status_code }}"
+          echo "${{ github.event.pull_request.user.login }}'s Profile does not exist in the database. Can go ahead with auto merge." > message.txt
           gh pr comment ${{ github.event.pull_request.number }} --body-file=message.txt
-          if [ ${{ steps.myRequest.outputs.status_code }} == '404' ]; then
-            echo "${{ github.event.pull_request.user.login }}'s Profile exists in the database. So closing the pr" > message.txt
-            gh pr comment ${{ github.event.pull_request.number }} --body-file=message.txt
-            gh pr merge --admin --merge
-          elif [ "${{ steps.myRequest.outputs.response }}" == 'test' ]; then
-            echo "${{ github.event.pull_request.user.login }}'s . Bypassing the check. as it is known user" > message.txt
-            gh pr comment ${{ github.event.pull_request.number }} --body-file=message.txt
-            gh pr merge --admin --merge
-          elif [ ${{ steps.myRequest.outputs.status_code }} == '200' ] || [ ${{ steps.myRequest.outputs.status_code }} -eq 304 ]; then
-            echo "${{ github.event.pull_request.user.login }}'s Profile exists in the database. So closing the pr" > message.txt
-            gh pr comment ${{ github.event.pull_request.number }} --body-file=message.txt
-            #has close
-          else
-            echo "${{ github.event.pull_request.user.login }}'s Something went wrong!. please get it reviewed!" > message.txt
-            gh pr comment ${{ github.event.pull_request.number }} --body-file=message.txt
-          fi
+          # gh pr merge --admin --merge
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        
+      # If the API request returns a response, continue with the next steps
+      - name: If response received, continue with other steps
+        if: steps.myRequest.outputs.response != ''
+        run: |
+          echo "response::=> ${{ steps.myRequest.outputs.response }}"
+          echo "status code::=> ${{ steps.myRequest.outputs.status_code }}"
+          echo "${{ github.event.pull_request.user.login }}'s Profile exists in the database. So closing the pr" > message.txt
+          gh pr comment ${{ github.event.pull_request.number }} --body-file=message.txt
+          # gh pr close --number ${{ github.event.workflow_run.payload.pull_requests[0].number }} --repo ${{ github.repository }}
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
