@@ -32,12 +32,14 @@ jobs:
         run: |
           echo "${{ github.event.pull_request.user.login }}'s Profile does not exist in database. can go ahed with auto merge"
           gh pr comment ${{ github.event.pull_request.number }} --body-file=message.txt
-          exit 0  
-
-      - name: Echo Message
-        run: |
-          echo "Hello, this is a GitHub Action!" > message.txt
-          echo "GH_TOKEN=${{ secrets.GITHUB_TOKEN }}" >> $GITHUB_ENV
-          gh pr comment ${{ github.event.pull_request.number }} --body-file=message.txt
+          exit 0
         env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}   
+
+    - name: Echo Message
+      run: |
+        echo "Hello, this is a GitHub Action!" > message.txt
+        echo "GH_TOKEN=${{ secrets.GITHUB_TOKEN }}" >> $GITHUB_ENV
+        gh pr comment ${{ github.event.pull_request.number }} --body-file=message.txt
+      env:
+        GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
