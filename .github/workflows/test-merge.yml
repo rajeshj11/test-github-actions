@@ -29,14 +29,7 @@ jobs:
           preventFailureOnNoResponse: "true"
           ignoreStatusCodes: "404"
           method: "GET"
-          output: "response.json"
-
-      # Extract the status code from the response
-      - name: Extract status code
-        id: status_code
-        run: |
-          status_code=$(jq -r '.status' response.json)
-          echo "::set-output name=status_code::$status_code"
+          responseFile: "response.json"
 
       # Fail the job if the source is not found
       - name: If 404 pass the job
