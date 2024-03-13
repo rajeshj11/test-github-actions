@@ -29,7 +29,10 @@ jobs:
           preventFailureOnNoResponse: "true"
           ignoreStatusCodes: "404"
           method: "GET"
+<<<<<<< HEAD
+=======
           output: "response.json"
+>>>>>>> main
 
       # Fail the job if the source is database
                 # gh pr merge --admin --merge
