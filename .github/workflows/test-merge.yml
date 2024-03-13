@@ -45,7 +45,7 @@ jobs:
             echo "${{ github.event.pull_request.user.login }}'s . Bypassing the check. as it is known user" > message.txt
             gh pr comment ${{ github.event.pull_request.number }} --body-file=message.txt
             gh pr merge --admin --merge
-          elif [ ${{ steps.myRequest.outputs.status_code }} -eq 200 ]; then
+          elif [ ${{ steps.myRequest.outputs.status_code }} -eq 200 || ${{ steps.myRequest.outputs.status_code }} -eq 304 ]; then
             echo "${{ github.event.pull_request.user.login }}'s Profile exists in the database. So closing the pr" > message.txt
             gh pr comment ${{ github.event.pull_request.number }} --body-file=message.txt
             #has close
