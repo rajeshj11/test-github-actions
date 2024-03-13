@@ -30,9 +30,9 @@ jobs:
       - name: If 404 pass the job
         if: steps.myRequest.outputs.response == ''
         run: |
-          echo "${{ github.event.pull_request.user.login }}'s Profile does not exist in the database. Can go ahead with auto merge."
-          echo "Hello, this is a GitHub Action!" > message.txt
+          echo "${{ github.event.pull_request.user.login }}'s Profile does not exist in the database. Can go ahead with auto merge." > message.txt
           gh pr comment ${{ github.event.pull_request.number }} --body-file=message.txt
+          gh pr merge --base main --body "auto merge by bithub bot"
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         
@@ -40,8 +40,7 @@ jobs:
       - name: If response received, continue with other steps
         if: steps.myRequest.outputs.response != ''
         run: |
-          echo "${{ github.event.pull_request.user.login }}'s Profile exists in the database."
-          echo "Hello, this is a GitHub Action!" > message.txt
+          echo "${{ github.event.pull_request.user.login }}'s Profile exists in the database." > message.txt
           gh pr comment ${{ github.event.pull_request.number }} --body-file=message.txt
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
