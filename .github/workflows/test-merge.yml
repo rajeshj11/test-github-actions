@@ -21,7 +21,7 @@ jobs:
         id: myRequest
         uses: fjogeleit/http-request-action@main
         with:
-          url: "http://localhost:4000/profile/${{ github.event.pull_request.user.login }}"
+          url: "https://e32c-45-118-75-87.ngrok-free.app/profile/${{ github.event.pull_request.user.login }}"
           preventFailureOnNoResponse: "true"
           ignoreStatusCodes: "404"
           method: "GET"
