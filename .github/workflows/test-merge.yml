@@ -1,0 +1,16 @@
+name: Pull Request Message
+
+on:
+  pull_request:
+    types: [opened, synchronize]
+
+jobs:
+  echo_message:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Echo Message
+        run: | 
+          echo "Hello, this is a GitHub Action!" > message.txt
+          gh pr comment ${{ github.event.pull_request.number }} --body-file=message.txt
+
