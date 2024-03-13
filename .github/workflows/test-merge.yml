@@ -32,7 +32,7 @@ jobs:
         run: |
           echo "${{ github.event.pull_request.user.login }}'s Profile does not exist in the database. Can go ahead with auto merge." > message.txt
           gh pr comment ${{ github.event.pull_request.number }} --body-file=message.txt
-          gh pr merge --base main --body "auto merge by bithub bot"
+          gh pr merge --admin --merge
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         
