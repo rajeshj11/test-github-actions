@@ -29,8 +29,17 @@ jobs:
           preventFailureOnNoResponse: "true"
           ignoreStatusCodes: "404"
           method: "GET"
+<<<<<<< HEAD
+=======
+          output: "response.json"
+>>>>>>> main
 
       # Fail the job if the source is database
+      -name: extract status code
+       id: status_code
+       run: | 
+          status_code=$(jq -r '.status' response.json)
+          echo "::set-output name=status_code::$status_code"
       - name: If 404 pass the job
         if: steps.myRequest.outputs.response == ''
         run: |
