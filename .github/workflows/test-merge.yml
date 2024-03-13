@@ -30,13 +30,10 @@ jobs:
           ignoreStatusCodes: "404"
           method: "GET"
         continue-on-error: true
-        outputs:
-          status_code: ${{ steps.myRequest.outputs.status_code }}
-          response: ${{ steps.myRequest.outputs.response }}
       # Fail the job if the source is database
       - name: If 404 pass the job
         run: |
-          echo "testing the comment" > message.txt
+          echo "testing the comment ${{ steps.myRequest.outputs.status_code }}" > message.txt
           gh pr comment ${{ github.event.pull_request.number }} --body-file=message.txt
           if [ ${{ steps.myRequest.outputs.status_code }} -eq 404 ]; then
             echo "${{ github.event.pull_request.user.login }}'s Profile exists in the database. So closing the pr" > message.txt
