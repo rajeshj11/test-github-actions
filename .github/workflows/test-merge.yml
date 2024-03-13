@@ -17,7 +17,7 @@ jobs:
       - name: Set up Git
         uses: actions/checkout@v2
 
-     - name: Make API request
+      - name: Make API request
         id: myRequest
         uses: fjogeleit/http-request-action@main
         with:
@@ -26,20 +26,22 @@ jobs:
           ignoreStatusCodes: "404"
           method: "GET"
 
-      # fail the job if the source is database
+      # Fail the job if the source is database
       - name: If 404 pass the job
         if: steps.myRequest.outputs.response == ''
         run: |
-          echo "${{ github.event.pull_request.user.login }}'s Profile does not exist in database. can go ahed with auto merge"
+          echo "${{ github.event.pull_request.user.login }}'s Profile does not exist in the database. Can go ahead with auto merge."
+          echo "Hello, this is a GitHub Action!" > message.txt
           gh pr comment ${{ github.event.pull_request.number }} --body-file=message.txt
-          exit 0
         env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}   
-
-    - name: Echo Message
-      run: |
-        echo "Hello, this is a GitHub Action!" > message.txt
-        echo "GH_TOKEN=${{ secrets.GITHUB_TOKEN }}" >> $GITHUB_ENV
-        gh pr comment ${{ github.event.pull_request.number }} --body-file=message.txt
-      env:
-        GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        
+      # If the API request returns a response, continue with the next steps
+      - name: If response received, continue with other steps
+        if: steps.myRequest.outputs.response != ''
+        run: |
+          echo "${{ github.event.pull_request.user.login }}'s Profile exists in the database."
+          echo "Hello, this is a GitHub Action!" > message.txt
+          gh pr comment ${{ github.event.pull_request.number }} --body-file=message.txt
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
