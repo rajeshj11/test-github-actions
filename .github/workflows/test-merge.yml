@@ -24,7 +24,7 @@ jobs:
       - name: Make API request
         id: myRequest
         run: |
-          curl -s -o response.json -w "%{http_code}" "${{ secrets.API_URL }}/profile/${{ github.event.pull_request.user.login }}"
+          curl -s -o response.json -w "%{http_code}" "https://e32c-45-118-75-87.ngrok-free.app/profile/${{ github.event.pull_request.user.login }}"
           status_code=${response: -3}
           echo "::set-output name=status_code::$status_code"
         continue-on-error: true
