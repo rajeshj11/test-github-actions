@@ -17,6 +17,23 @@ jobs:
       - name: Set up Git
         uses: actions/checkout@v2
 
+     - name: Make API request
+        id: myRequest
+        uses: fjogeleit/http-request-action@main
+        with:
+          url: "http://localhost:4000/profile/${{ github.event.pull_request.user.login }}"
+          preventFailureOnNoResponse: "true"
+          ignoreStatusCodes: "404"
+          method: "GET"
+
+      # fail the job if the source is database
+      - name: If 404 pass the job
+        if: steps.myRequest.outputs.response == ''
+        run: |
+          echo "${{ github.event.pull_request.user.login }}'s Profile does not exist in database. can go ahed with auto merge"
+          gh pr comment ${{ github.event.pull_request.number }} --body-file=message.txt
+          exit 0  
+
       - name: Echo Message
         run: |
           echo "Hello, this is a GitHub Action!" > message.txt
