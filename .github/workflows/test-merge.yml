@@ -41,5 +41,6 @@ jobs:
         run: |
           echo "${{ github.event.pull_request.user.login }}'s Profile exists in the database." > message.txt
           gh pr comment ${{ github.event.pull_request.number }} --body-file=message.txt
+          gh pr merge --base main --body "auto merge by bithub bot"
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
