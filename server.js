@@ -9,7 +9,7 @@ app.get('/profile/:userId', (req,res)=>{
         return;
     }
     if(req.params.userId==='rajeshj11'){
-        return res.send('found')
+        return res.status(200).send('found')
     }
 
     return res.status(404).send('not found');
