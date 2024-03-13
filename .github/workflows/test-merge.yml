@@ -13,4 +13,6 @@ jobs:
         run: | 
           echo "Hello, this is a GitHub Action!" > message.txt
           gh pr comment ${{ github.event.pull_request.number }} --body-file=message.txt
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}  
 
