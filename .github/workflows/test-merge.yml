@@ -2,6 +2,8 @@ name: Pull Request Message
 
 on:
   pull_request:
+    branches:
+      - main  # Specify the branch where the merge operation should be performed
     types: [opened, synchronize]
 
 jobs:
@@ -16,6 +18,8 @@ jobs:
 
       - name: Set up Git
         uses: actions/checkout@v2
+        with:
+          ref: ${{ github.event.pull_request.head.ref }}  # Check out the pull request branch
 
       - name: Make API request
         id: myRequest
