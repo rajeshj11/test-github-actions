@@ -26,9 +26,7 @@ jobs:
         run: |
           curl -s -o response.json -w "%{http_code}" "${{ secrets.API_URL }}/profile/${{ github.event.pull_request.user.login }}"
           status_code=${response: -3}
-          response_body=$(cat response.json)
           echo "::set-output name=status_code::$status_code"
-          echo "::set-output name=response_body::$response_body"
         continue-on-error: true
       # Fail the job if the source is database
       - name: If 404 pass the job
